@@ -34,12 +34,12 @@ class Redirect(models.Model):
 #Para probarlos sin inconvenientes, comentar uno y descomentar el otro
 
 from django.core.cache import cache
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 #Al editarse un objeto, se borra toda la caché, se recuperan todos los que esten actives y se los guarda en la caché
 
-@receiver(post_save, sender=Redirect)
+@receiver([post_save,post_delete], sender=Redirect)
 def actives_to_cache(sender,instance,**kwargs):
     cache.clear()
 
@@ -51,7 +51,7 @@ def actives_to_cache(sender,instance,**kwargs):
 
 #Al editarse un objeto, se saca ESE objeto de la caché y si se sigue active se lo vuelve a guardar actualizado en la caché
 
-# @receiver(post_save, sender=Redirect)
+# @receiver([post_save,post_delete], sender=Redirect)
 # def actives_to_cache_2(sender,instance,**kwargs):
 
 #     cache.delete(instance.key)
